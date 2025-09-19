@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Колесо Фортуны</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Content for each tab wrapped in main content area -->
+    <main id="content">
+
+        <!-- Wheel Tab Content -->
+        <div id="wheel" class="tab-content active">
+            <!-- Connect Wallet Button (Only on Wheel Tab) -->
+            <button id="connectWalletButton">Connect Wallet</button>
+
+            <h1>Колесо Фортуны</h1>
+            <div class="roulette-container">
+                <canvas id="wheelCanvas" width="500" height="500"></canvas>
+                <div class="arrow"></div>
+            </div>
+            <button id="spinButton">Крутить!</button>
+            <div id="result"></div>
+            <audio id="spinSound" src="spin.mp3"></audio>
+            <audio id="winSound" src="win.mp3"></audio>
+        </div>
+
+        <!-- Inventory Tab Content -->
+        <div id="inventory" class="tab-content">
+            <h2>Инвентарь</h2>
+            <p>Здесь будет содержимое инвентаря.</p>
+        </div>
+
+        <!-- Profile Tab Content -->
+        <div id="profile" class="tab-content">
+            <h2>Профиль</h2>
+            <p>Здесь будет информация о профиле игрока.</p>
+        </div>
+    </main>
+
+    <!-- Navigation Tabs at the bottom -->
+    <nav class="tab-bar">
+        <a href="#" class="tab-button" data-tab="wheel">Колесо</a>
+        <a href="#" class="tab-button" data-tab="inventory">Инвентарь</a>
+        <a href="#" class="tab-button" data-tab="profile">Профиль</a>
+    </nav>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
