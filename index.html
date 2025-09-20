@@ -1,58 +1,59 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="dark-theme">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Колесо Фортуны</title>
+    <title>Колесо Фортуны TON</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/index.js"></script>
 </head>
 <body>
 
 <div class="container">
+    <div class="header">
+        <h1>Колесо Фортуны TON</h1>
+        <div class="ton-connect-container">
+            <button id="connectWalletButton">Подключить кошелек</button>
+            <div id="walletAddress">Кошелек не подключен</div>
+        </div>
+    </div>
 
-    <!-- Content for each tab wrapped in main content area -->
-    <main id="content">
-
-        <!-- Wheel Tab Content -->
-        <div id="wheel" class="tab-content active">
-            <!-- Connect Wallet Button (Only on Wheel Tab) -->
-            <button id="connectWalletButton">Connect Wallet</button>
-
-            <h1>Колесо Фортуны</h1>
-            <div class="roulette-container">
-                <canvas id="wheelCanvas" width="500" height="500"></canvas>
-                <div class="arrow"></div>
+    <div id="wheel-tab" class="tab-content active">
+        <div class="wheel-container">
+            <div class="arrow"></div>
+            <canvas id="wheelCanvas" width="600" height="600"></canvas>
+            <div class="wheel-controls">
+                <button id="spinButton">Крутить!</button>
+                <div id="result"></div>
             </div>
-            <button id="spinButton">Крутить!</button>
-            <div id="result"></div>
-            <audio id="spinSound" src="spin.mp3"></audio>
-            <audio id="winSound" src="win.mp3"></audio>
+            <audio id="spinSound" src="spin.mp3" preload="auto"></audio>
+            <audio id="winSound" src="win.mp3" preload="auto"></audio>
         </div>
+        <p>Крутите колесо и выигрывайте призы!</p>
+    </div>
 
-        <!-- Inventory Tab Content -->
-        <div id="inventory" class="tab-content">
-            <h2>Инвентарь</h2>
-            <p>Здесь будет содержимое инвентаря.</p>
-        </div>
+    <div id="inventory-tab" class="tab-content">
+        <h2>Инвентарь</h2>
+        <p id="inventory-message">Здесь будет ваш инвентарь...</p>
+    </div>
 
-        <!-- Profile Tab Content -->
-        <div id="profile" class="tab-content">
-            <h2>Профиль</h2>
-            <p>Здесь будет информация о профиле игрока.</p>
-        </div>
-    </main>
+    <div id="profile-tab" class="tab-content">
+        <h2>Профиль</h2>
+        <p>Здесь будет ваш профиль...</p>
+    </div>
 
-    <!-- Navigation Tabs at the bottom -->
-    <nav class="tab-bar">
-        <a href="#" class="tab-button" data-tab="wheel">Колесо</a>
-        <a href="#" class="tab-button" data-tab="inventory">Инвентарь</a>
-        <a href="#" class="tab-button" data-tab="profile">Профиль</a>
-    </nav>
+    <div class="tabs">
+        <button class="tab-button active" data-tab="wheel-tab">Колесо</button>
+        <button class="tab-button" data-tab="inventory-tab">Инвентарь</button>
+        <button class="tab-button" data-tab="profile-tab">Профиль</button>
+    </div>
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
+
 
 
 
