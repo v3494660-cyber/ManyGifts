@@ -4,140 +4,247 @@ const spinSound = document.getElementById('spinSound');
 const winSound = document.getElementById('winSound');
 const canvas = document.getElementById('wheelCanvas');
 const ctx = canvas.getContext('2d');
-const arrow = document.querySelector('.arrow');
 
-let spinning = false;
-const prizes = ['Ничего', 'Boost', 'Bow Tie', 'Lol Pop'];
-const colors = ['#E74C3C', '#3498DB', '#2ECC71', '#F39C12'];
+const connectWalletButton = document.getElementById('connectWalletButton');
+const walletAddressElement = document.getElementById('walletAddress');
+
+// Параметры колеса
+const prizes = ['Ничего', 'Lol Pop', 'Bow Tie', '2 Ton'];
+const colors = ['gray', 'purple', 'yellow', 'green'];
+const prizePercentages = [0.70, 0.20, 0.05, 0.05];
 const numSlices = prizes.length;
-let rotation = 0;
-let animFrameId;
 
-// Radius to move the text offset from the center
-const textRadiusOffset = 30;
-const fontSize = 20;
+// Углы
+let rotationAngle = 0;
+let spinSpeed = 0;
+let animationFrameId;
 
-function drawRoulette() {
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
-  const radius = Math.min(centerX, centerY) - 50;
+// Физика вращения
+const friction = 0.995; //трение(замедление)
+const baseSpinSpeed = 5; //скорость вращения
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+// Определяем центральный угол для каждой зоны
+const prizeAngles = prizePercentages.map((percentage, index) => {
+    let angle = 0;
+    for (let i = 0; i < index; i++) {
+        angle += 2 * Math.PI * prizePercentages[i];
+    }
+    return angle + (2 * Math.PI * percentage) / 2;
+});
 
-  // Improved drawing for better visuals
-  for (let i = 0; i < numSlices; i++) {
-        const startAngle = i * (2 * Math.PI / numSlices);
-        const endAngle = (i + 1) * (2 * Math.PI / numSlices);
 
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-        ctx.fillStyle = colors[i];
-        ctx.fill();
-        ctx.closePath();
+// Функция для отрисовки сектора с тенью и подсветкой
+function drawSlice(ctx, centerX, centerY, radius, startAngle, endAngle, color, prize) {
+    // Тень
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = 5;
+    ctx.shadowOffsetX = 3;
+    ctx.shadowOffsetY = 3;
 
-        // Enhanced Outline
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)'; // Darker outline
-        ctx.lineWidth = 3; // Thicker outline
-        ctx.stroke();
-        ctx.closePath();
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
 
-    // Text rendering
+    // Подсветка
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle - 0.1, false);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Надпись
     ctx.save();
     ctx.translate(centerX, centerY);
-    ctx.rotate(startAngle + (Math.PI / numSlices));
+    ctx.rotate(startAngle + (endAngle - startAngle) / 2);
     ctx.fillStyle = 'white';
-    ctx.font = `${fontSize}px sans-serif`;
+    ctx.font = 'bold 20px sans-serif';
     ctx.textAlign = 'center';
-    ctx.shadowColor = 'black';
-    ctx.shadowOffsetX = 2;
-    ctx.shadowOffsetY = 2;
-    ctx.shadowBlur = 3;
-    ctx.fillText(prizes[i], radius / 2 + textRadiusOffset, 7);
+    ctx.shadowColor = 'transparent'; // Убираем тень для текста
+    ctx.fillText(prize, radius / 2, 0);
     ctx.restore();
-  }
 }
 
-function spinRoulette() {
-    if (spinning) return;
-    spinning = true;
-    spinButton.disabled = true;
+// Рисуем колесо
+function drawWheel() {
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(centerX, centerY) - 20;
 
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Рисуем фон колеса
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.fillStyle = 'black';
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius + 10, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Рисуем сектора
+    let currentAngle = 0;
+    for (let i = 0; i < numSlices; i++) {
+        const angle = 2 * Math.PI * prizePercentages[i];
+        const startAngle = currentAngle;
+        const endAngle = currentAngle + angle;
+
+        drawSlice(ctx, centerX, centerY, radius, startAngle, endAngle, colors[i], prizes[i]);
+        currentAngle += angle;
+    }
+
+    // Рисуем центральный круг
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 50, 0, 2 * Math.PI);
+    ctx.fillStyle = 'white';
+    ctx.fill();
+}
+
+// Функция для запуска вращения
+function spinWheel() {
+    // Проверка, что колесо не вращается
+    if (animationFrameId) {
+        return;
+    }
+
+    // Задаем случайную скорость вращения
+    spinSpeed = baseSpinSpeed + Math.random() * 3;
+
+    // Запускаем звук вращения
     spinSound.loop = true;
     spinSound.play();
 
-    let rotations = 5 + Math.random() * 3;
-    let endAngle = Math.random() * (2 * Math.PI);
+    // Блокируем кнопку вращения
+    spinButton.disabled = true;
 
-    const animationDuration = 5000;
-    let startTime = null;
-
-    function animate(currentTime) {
-        if (!startTime) startTime = currentTime;
-        const progress = Math.min((currentTime - startTime) / animationDuration, 1);
-
-        rotation = rotations * 2 * Math.PI * progress + endAngle * progress;
-        rotation = rotation % (2 * Math.PI);
-        canvas.style.transform = `rotate(${rotation}rad)`;
-
-        if (progress < 1) {
-            animFrameId = requestAnimationFrame(animate);
-        } else {
-            spinning = false;
-            spinButton.disabled = false;
-            spinSound.pause();
-            spinSound.currentTime = 0;
-            winSound.play();
-
-            // Determine outcome
-            // Determine outcome (accounting for the arrow at the bottom)
-            let winningSlice = Math.floor((rotation / (2 * Math.PI)) * numSlices) % numSlices;
-            winningSlice = (numSlices - winningSlice) % numSlices; // Adjust to arrow being at the bottom
-
-            const prize = prizes[winningSlice];
-            resultDiv.innerText = 'Вы выиграли: ' + prize;
-        }
-    }
-
-    if (animFrameId) {
-        cancelAnimationFrame(animFrameId);
-    }
-    startTime = null;
-    animFrameId = requestAnimationFrame(animate);
+    // Запускаем анимацию
+    animate();
 }
 
-// Tab navigation
-document.querySelectorAll('.tab-button').forEach(button => {
-    button.addEventListener('click', function(event) {
-        event.preventDefault();
-        const tabId = this.getAttribute('data-tab');
+// Анимация вращения
+function animate() {
+    // Уменьшаем скорость вращения
+    spinSpeed *= friction;
 
-        // Deactivate existing tab and content
-        document.querySelector('.tab-button.active').classList.remove('active');
-        document.querySelector('.tab-content.active').classList.remove('active');
+    // Вращаем колесо
+    rotationAngle += spinSpeed;
+    rotationAngle %= (2 * Math.PI);
 
-        // Activate new tab and content
-        this.classList.add('active');
-        document.getElementById(tabId).classList.add('active');
+    // Перерисовываем колесо
+    drawWheel();
+    canvas.style.transform = `rotate(${rotationAngle}rad)`;
 
-        // Re-initialize specific components if necessary
-        if (tabId === 'wheel') {
-            // Re-draw roulette if the wheel tab is activated again
-            drawRoulette();
+    // Проверяем, закончено ли вращение
+    if (spinSpeed < 0.02) {
+        // Останавливаем анимацию
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+
+        // Останавливаем звук вращения
+        spinSound.pause();
+        spinSound.currentTime = 0;
+
+        // Воспроизводим звук выигрыша
+        winSound.play();
+
+        // Определяем выигрышную зону
+        const winningPrize = determineWinningPrize();
+
+        // Выводим результат
+        resultDiv.innerText = 'Вы выиграли: ' + winningPrize;
+
+        // Разблокируем кнопку вращения
+        spinButton.disabled = false;
+
+        return;
+    }
+
+    // Запускаем следующий кадр анимации
+    animationFrameId = requestAnimationFrame(animate);
+}
+
+//Определение выигрышной зоны
+function determineWinningPrize() {
+    // Угол, на который указывает стрелка
+    let arrowAngle = rotationAngle;
+
+    // Инвертируем угол, т.к. колесо вращается против часовой стрелки
+    arrowAngle = (2 * Math.PI) - arrowAngle;
+
+    // Нормализуем угол
+    arrowAngle %= (2 * Math.PI);
+
+    // Находим ближайший угол зоны
+    let closestAngle = prizeAngles[0];
+    let closestIndex = 0;
+
+    for (let i = 1; i < prizeAngles.length; i++) {
+        if (Math.abs(arrowAngle - prizeAngles[i]) < Math.abs(arrowAngle - closestAngle)) {
+            closestAngle = prizeAngles[i];
+            closestIndex = i;
         }
+    }
+
+    return prizes[closestIndex];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//  ЛОГИКА ВКЛАДОК (полная переработка и отладка)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const inventoryMessage = document.getElementById('inventory-message');
+
+    // Функция для скрытия всех вкладок
+    const hideAllTabs = () => {
+        tabContents.forEach(tabContent => {
+            tabContent.style.display = 'none';
+        });
+        tabButtons.forEach(tabButton => {
+            tabButton.classList.remove('active');
+        });
+    };
+
+    // Функция для отображения выбранной вкладки
+    const showTab = (tabId) => {
+        hideAllTabs();
+        const tab = document.getElementById(tabId);
+        const button = document.querySelector(`.tab-button[data-tab="${tabId}"]`);
+        if (tab) {
+            tab.style.display = 'block';
+            button.classList.add('active');
+
+            // Если это вкладка инвентаря и инвентарь пуст
+            if (tabId === 'inventory-tab' && !inventoryMessage.textContent.trim()) {
+                inventoryMessage.textContent = 'Инвентарь пуст';
+            }
+        }
+    };
+
+    // Обработчики кликов на кнопки вкладок
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabId = button.dataset.tab;
+            showTab(tabId);
+        });
     });
+
+    // По умолчанию отображаем вкладку колеса
+    showTab('wheel-tab');
 });
 
-// Ensure the wheel tab is active on page load
-document.querySelector('.tab-button[data-tab="wheel"]').classList.add('active');
-document.getElementById('wheel').classList.add('active');
+// Остальной код (кнопки, кошелек и т.д.)
+drawWheel();
 
-// Initial draw (if wheel is the default tab)
-drawRoulette();
+spinButton.addEventListener('click', spinWheel);
 
-spinButton.addEventListener('click', spinRoulette);
+connectWalletButton.addEventListener('click', async () => {
+    alert("Функциональность подключения кошелька будет добавлена позже!");
+});
 
 
 
