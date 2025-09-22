@@ -1,3 +1,208 @@
+/* Общие стили */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 90%; /* Занимает 90% ширины экрана */
+    max-width: 800px;
+    text-align: center;
+    padding: 20px; /* Уменьшен отступ */
+    margin: 10px; /* Уменьшен отступ */
+    transition: background-color 0.3s, color 0.3s;
+    box-sizing: border-box; /*  Чтобы padding и border не увеличивали ширину */
+}
+
+/* Заголовок (Header) */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px; /*Уменьшен отступ */
+    flex-direction: column;
+}
+
+h1 {
+    color: #333;
+    font-size: 24px; /*Меньший размер шрифта */
+    margin-bottom: 10px; /*Отступ от заголовка */
+}
+
+/* Кнопка подключения кошелька */
+.ton-connect-container {
+    display: inline-block;
+}
+
+#connectWalletButton {
+    padding: 8px 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /*Меньший размер шрифта */
+    transition: background-color 0.3s;
+}
+
+#connectWalletButton:hover {
+    background-color: #2980b9;
+}
+
+#walletAddress {
+    margin-top: 5px; /*Уменьшен отступ */
+    font-size: 12px; /*Меньший размер шрифта */
+}
+
+/* Колесо */
+.wheel-container {
+    position: relative;
+    margin-bottom: 20px; /*Уменьшен отступ */
+}
+
+#wheelCanvas {
+    border-radius: 50%;
+    transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* box-shadow не так много памяти жрет в отличии от transition */
+    width: 100%;           /* Занимает всю ширину контейнера */
+    max-width: 400px;   /* Максимальный размер колеса  */
+    height: auto;          /* Сохраняет пропорции */
+}
+
+.arrow {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    margin-left: -10px; /*Подправлен */
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 15px solid red;
+    z-index: 2;
+}
+
+/* Элементы управления колесом */
+.wheel-controls {
+    margin-top: 10px; /*Уменьшен отступ */
+}
+
+#spinButton {
+    padding: 10px 20px; /*Уменьшен отступ */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px; /*Меньший размер шрифта */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#spinButton:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+#result {
+    margin-top: 10px; /*Уменьшен отступ */
+    font-weight: bold;
+    font-size: 16px; /*Меньший размер шрифта */
+}
+
+/* Вкладки (Tabs) */
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /*Уменьшен отступ */
+}
+
+.tab-button {
+    padding: 10px 20px; /*Уменьшен отступ */
+    border: none;
+    background-color: #ddd;
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 0 5px; /*Уменьшен отступ */
+    font-size: 14px; /*Меньший размер шрифта */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.tab-button.active {
+    background-color: #bbb;
+    color: white;
+}
+
+/* Содержимое вкладки */
+.tab-content {
+    display: none;
+    padding: 15px; /*Уменьшен отступ */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 15px; /*Уменьшен отступ */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Тёмная тема */
+.dark-theme {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.dark-theme .container {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    color: #f0f0f0;
+}
+
+.dark-theme h1 {
+    color: #fff;
+}
+
+.dark-theme .tab-button {
+    background-color: #333;
+    color: #fff;
+}
+
+.dark-theme .tab-button.active {
+    background-color: #555;
+}
+
+.dark-theme .tab-content {
+    border-color: #555;
+}
+
+/* Media queries для адаптации под разные экраны */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 20px;
+    }
+
+    .tab-button {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 400px) {
+    .container {
+        padding: 15px;
+    }
+
+    #wheelCanvas {
+        max-width: 300px;
+    }
+}
+
 
 
 
