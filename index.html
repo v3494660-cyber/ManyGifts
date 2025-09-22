@@ -1,3 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Колесо Удачи</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body class="">
+    <div class="container">
+        <div class="header">
+            <h1>Колесо Удачи</h1>
+            <div class="ton-connect-container">
+                <button id="connectWalletButton">Подключить кошелек</button>
+                <div id="walletAddress"></div>
+            </div>
+        </div>
+
+        <div class="wheel-container">
+            <canvas id="wheelCanvas" width="400" height="400"></canvas>
+            <div class="arrow"></div>
+        </div>
+
+        <div class="wheel-controls">
+            <button id="spinButton">Вращать</button>
+            <div id="result"></div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="tab1">Описание</button>
+            <button class="tab-button" data-tab="tab2">Правила</button>
+            <button class="tab-button" data-tab="tab3">Настройки</button>
+        </div>
+
+        <div id="tab1" class="tab-content" style="display:block;">
+            Описание контента для вкладки 1.
+        </div>
+        <div id="tab2" class="tab-content">
+            Описание контента для вкладки 2.
+        </div>
+        <div id="tab3" class="tab-content">
+            Описание контента для вкладки 3.
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.js"></script>
+</body>
+</html>
+
+
 
 
 
