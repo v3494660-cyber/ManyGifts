@@ -1,7 +1,7 @@
 {
   "name": "Колесо Удачи",
   "description": "Приложение для розыгрыша призов с использованием TON",
-  "url": "http://wh27199.web1.maze-tech.ru/",
+  "url": "https://v3494660-cyber.github.io/ManyGifts/",
   "icons": [
     {
       "src": "icon.png",
@@ -14,3 +14,4 @@
   "background_color": "#fff",
   "theme_color": "#3498db"
 }
+
