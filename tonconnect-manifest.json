@@ -1,7 +1,7 @@
 {
   "name": "Колесо Удачи",
   "description": "Приложение для розыгрыша призов с использованием TON",
-  "url": "https://v3494660-cyber.github.io/ManyGifts/",
+  "url": "https://v3494660-cyber.github.io/ManyGifts/tonconnect-manifest.json",
   "icons": [
     {
       "src": "icon.png",
@@ -14,4 +14,5 @@
   "background_color": "#fff",
   "theme_color": "#3498db"
 }
+
 
