@@ -2,51 +2,296 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Колесо Удачи</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web App Telegram</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;  /* Add this line */
+        }
+
+        .top-buttons-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 45px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            background-color: rgba(18, 18, 18, 0.9);
+            backdrop-filter: blur(5px);
+            box-sizing: border-box;
+            height: 90px;
+        }
+
+        .balance-container {
+            display: flex;
+            align-items: center;
+            margin-top: auto;
+            margin-bottom: 0;
+        }
+
+        #balance {
+            font-size: 14px;
+            padding: 6px 10px;
+            border: 2px solid #4285f4;
+            border-radius: 7px;
+            margin-right: 20px;
+            align-self: flex-end;
+        }
+
+        .top-buttons-container #ton-connect {
+            margin-left: auto;
+            margin-top: auto;
+            margin-bottom: 0;
+        }
+
+        .top-buttons-container button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+
+        .top-buttons-container button:hover {
+            background-color: #357ae8;
+        }
+
+        .top-buttons-container #ton-connect button {
+            background-color: #4285f4;
+            color: white;
+        }
+
+        .top-buttons-container #ton-connect button:hover {
+            background-color: #357ae8;
+        }
+
+        #spinButton {
+            padding: 14px 24px;
+            font-size: 18px;
+            margin-top: 20px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #spinButton:hover {
+            background-color: #357ae8;
+        }
+
+        .bottom-nav {
+            background-color: #292929;
+            border-top: 1px solid #333;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .bottom-nav a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 7px;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 16px;
+        }
+
+        .bottom-nav a:hover,
+        .bottom-nav a.active {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .page {
+            display: none;
+            padding: 10px;
+            margin-bottom: 60px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        #wheel {
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        #inventory, #profile {
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        .profile-info {
+            margin-bottom: 10px;
+        }
+
+        .profile-info p {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .deposit-amount {
+            padding: 5px 10px;
+            border: 2px solid #4285f4;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .wheel-img {
+            max-width: 90%;
+            width: auto;
+            border-radius: 15px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Стили для надписи "Доступно раз в сутки" */
+        .available-once {
+            font-size: 12px;          /* Уменьшенный размер шрифта */
+            color: #fff;
+            border: 1px solid red; /* Красная рамка */
+            padding: 2px 5px;       /* Отступы внутри рамки */
+            border-radius: 5px;      /* Скругление углов рамки */
+            display: inline-block; /* Строчно-блочный элемент */
+            margin-top: 5px;         /* Небольшой отступ сверху */
+        }
+
+        /* Стили для текста внизу инвентаря */
+        .inventory-footer {
+            position: absolute;
+            bottom: 60px;        /* Отступ от нижнего края */
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;      /* Размер шрифта */
+        }
+    </style>
 </head>
-<body class="">
-    <div class="container">
-        <div class="header">
-            <h1>Колесо Удачи</h1>
-            <div class="ton-connect-container">
-                <button id="connectWalletButton">Подключить кошелек</button>
-                <div id="walletAddress"></div>
-            </div>
-        </div>
+<body>
 
-        <div class="wheel-container">
-            <canvas id="wheelCanvas" width="400" height="400"></canvas>
-            <div class="arrow"></div>
-        </div>
-
-        <div class="wheel-controls">
-            <button id="spinButton">Вращать</button>
-            <div id="result"></div>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-button active" data-tab="tab1">Описание</button>
-            <button class="tab-button" data-tab="tab2">Правила</button>
-            <button class="tab-button" data-tab="tab3">Настройки</button>
-        </div>
-
-        <div id="tab1" class="tab-content" style="display:block;">
-            Описание контента для вкладки 1.
-        </div>
-        <div id="tab2" class="tab-content">
-            Описание контента для вкладки 2.
-        </div>
-        <div id="tab3" class="tab-content">
-            Описание контента для вкладки 3.
-
-        </div>
+<div class="top-buttons-container">
+    <div class="balance-container">
+        <div id="balance">Баланс: 0.00 TON</div>
     </div>
+    <div id="ton-connect"></div>
+</div>
 
-    <script src="script.js"></script>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.js"></script>
+<div id="wheel" class="page active">
+    <h2>Колесо Удачи</h2>
+    <span class="available-once">Доступно раз в сутки</span>
+    <img src="wheel.jpg" alt="Колесо удачи" class="wheel-img">
+    <button id="spinButton" onclick="sendTransaction()">Вращать за 1 TON</button>
+</div>
+
+<div id="inventory" class="page">
+    <h2>Инвентарь</h2>
+    <p>Ваш инвентарь пуст!</p>
+    <div class="inventory-footer">
+        Для получения подарков напишите "Привет" боту <a href="https://t.me/GiftsToPortals">@GiftsToPortals</a>
+    </div>
+</div>
+
+<div id="profile" class="page">
+    <h2>Профиль</h2>
+    <div class="profile-info">
+        <p>Имя пользователя: <span id="nickname">Загрузка...</span></p>
+        <p>Общая сумма депозитов: <span class="deposit-amount">0.00 TON</span></p>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <a href="#wheel" data-page="wheel" class="active">Колесо</a>
+    <a href="#inventory" data-page="inventory">Инвентарь</a>
+    <a href="#profile" data-page="profile">Профиль</a>
+</nav>
+
+<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+<script>
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://www.wh27199.web1.maze-tech.ru/tonconnect-manifest.json',
+        buttonRootId: 'ton-connect'
+    });
+
+    async function sendTransaction() {
+        if (!tonConnectUI.account) {
+            alert("Подключите кошелек!");
+            return;
+        }
+
+        const transaction = {
+            validUntil: Math.round(Date.now() / 1000) + 300,
+            messages: [
+                {
+                    address: "UQApR3StsZJSGEFspLUoD_5Aj9R28WLVq94Mqzrv1P8OKs5Z", // Замените на адрес вашего контракта
+                    amount: "1000000000"  // 1 TON = 1000000000 nanotons
+                }
+            ]
+        };
+
+        try {
+            const result = await tonConnectUI.sendTransaction(transaction);
+            console.log("Transaction result:", result);
+            alert("Транзакция отправлена!");
+        } catch (e) {
+            console.error("Ошибка при отправке транзакции:", e);
+            alert("Ошибка при отправке транзакции: " + e.message);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const navLinks = document.querySelectorAll('.bottom-nav a');
+        const pages = document.querySelectorAll('.page');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const pageId = this.getAttribute('data-page');
+
+                pages.forEach(page => page.classList.remove('active'));
+                navLinks.forEach(link => link.classList.remove('active'));
+
+                document.getElementById(pageId).classList.add('active');
+                this.classList.add('active');
+            });
+        });
+
+        const webApp = window.Telegram.WebApp;
+        const userData = webApp.initDataUnsafe;
+        const nickname = userData.first_name;
+
+        document.getElementById('nickname').textContent = nickname || 'Не указан';
+
+    });
+</script>
 </body>
 </html>
 
