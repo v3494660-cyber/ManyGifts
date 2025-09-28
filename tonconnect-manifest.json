@@ -1,18 +1,8 @@
 {
-  "name": "Колесо Удачи",
-  "description": "Приложение для розыгрыша призов с использованием TON",
-  "url": "https://v3494660-cyber.github.io/ManyGifts/tonconnect-manifest.json",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ],
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#fff",
-  "theme_color": "#3498db"
+    "url": "https://www.wh27199.web1.maze-tech.ru/",
+    "name": "Wheel Lucky",
+    "iconUrl": "https://www.wh27199.web1.maze-tech.ru/logo.jpg"
 }
+
 
 
