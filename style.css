@@ -1,209 +1,322 @@
-/* Общие стили */
 body {
     font-family: sans-serif;
+    background-color: #121212;
+    color: #fff;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
-    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
-.container {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 90%; /* Занимает 90% ширины экрана */
-    max-width: 800px;
-    text-align: center;
-    padding: 20px; /* Уменьшен отступ */
-    margin: 10px; /* Уменьшен отступ */
-    transition: background-color 0.3s, color 0.3s;
-    box-sizing: border-box; /*  Чтобы padding и border не увеличивали ширину */
-}
-
-/* Заголовок (Header) */
-.header {
+/* --- ВЕРХНЯЯ ПАНЕЛЬ (Top Bar) --- */
+.top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px; /*Уменьшен отступ */
-    flex-direction: column;
+    padding: 10px 15px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    max-width: 480px;
+    z-index: 100;
+    background-color: rgba(18, 18, 18, 0.95);
+    backdrop-filter: blur(5px);
+    box-sizing: border-box;
+    height: 60px;
+    border-bottom: 1px solid #292929;
 }
 
-h1 {
-    color: #333;
-    font-size: 24px; /*Меньший размер шрифта */
-    margin-bottom: 10px; /*Отступ от заголовка */
+.balance-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
-/* Кнопка подключения кошелька */
-.ton-connect-container {
-    display: inline-block;
+.balance-item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 7px;
+    white-space: nowrap;
 }
 
-#connectWalletButton {
-    padding: 8px 16px;
-    background-color: #3498db;
+.bonus-balance-container {
+    border: 2px solid #ffcc00;
+    color: #ffcc00;
+}
+.deposit-balance-container {
+    border: 2px solid #4285f4; /* TON Connect Blue */
+    color: #fff;
+}
+
+.btn-add-ton {
+    background-color: #4285f4;
     color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 5px;
+    transition: background-color 0.2s;
+}
+
+#ton-connect {
+    margin-left: auto;
+}
+
+/* --- ОСНОВНОЙ КОНТЕНТ --- */
+.content-wrapper {
+    width: 100%;
+    max-width: 480px;
+    flex-grow: 1;
+    padding-top: 60px; 
+    padding-bottom: 70px;
+    box-sizing: border-box;
+}
+
+.page {
+    display: none;
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.page.active {
+    display: block;
+}
+
+/* Стиль для профиля, чтобы он не требовал прокрутки вниз */
+#profile-page {
+    min-height: calc(100vh - 60px - 70px); 
+    text-align: left;
+}
+
+/* --- СТРАНИЦА ИГРЫ --- */
+#game-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#game-container {
+    width: 100%;
+    max-width: 300px;
+    height: 400px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 10px;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* --- РАКЕТА (Возвращена к оригиналу) --- */
+#rocket {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 0.3s ease-out, opacity 0.3s;
+    width: 40px; 
+    height: 80px; 
+    background-color: #f44336; /* Красный цвет для ракеты */
+    border-radius: 50% 50% 10% 10%;
+    box-shadow: 0 0 10px rgba(255, 165, 0, 0.8);
+}
+/* Пламя (теперь псевдоэлемент) */
+#rocket::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background: orange;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 5px yellow, 0 0 20px 10px red;
+    animation: flame-flicker 0.1s infinite alternate;
+}
+.flying #rocket::after {
+    animation: flying-flame 0.05s infinite;
+    height: 30px;
+    width: 25px;
+}
+@keyframes flying-flame {
+    0% { height: 25px; opacity: 0.9; }
+    100% { height: 30px; opacity: 1; }
+}
+@keyframes flame-flicker {
+    from { height: 18px; }
+    to { height: 22px; }
+}
+
+/* --- Анимация Краша --- */
+.crashed #rocket { opacity: 0; }
+.crashed #game-container { animation: explosion-pulse 0.5s ease-out 1; }
+
+@keyframes explosion-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4); }
+    70% { box-shadow: 0 0 0 50px rgba(255, 0, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+}
+
+#multiplier {
+    font-size: 20px;
+    margin-top: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3em;
+    font-weight: bold;
+    color: #3cb371; 
+}
+.crashed #multiplier {
+    color: #ff5555 !important;
+    text-shadow: 0 0 10px rgba(255, 85, 85, 0.8) !important;
+}
+
+
+/* --- УПРАВЛЕНИЕ СТАВКАМИ (Мобильная адаптация) --- */
+#bet-controls {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    flex-wrap: wrap; /* Позволяет элементам переноситься */
+    gap: 10px;
+}
+
+.bet-input-group {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+#bet-amount {
+    flex-basis: 60%;
+    padding: 8px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #222;
+    color: #fff;
+}
+.bet-select {
+    flex-basis: 40%;
+    padding: 8px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #222;
+    color: #fff;
+    appearance: none;
+}
+
+#bet-controls button {
+    padding: 10px 12px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px; /*Меньший размер шрифта */
     transition: background-color 0.3s;
+    flex-basis: calc(50% - 5px); /* Кнопки рядом */
 }
 
-#connectWalletButton:hover {
-    background-color: #2980b9;
-}
-
-#walletAddress {
-    margin-top: 5px; /*Уменьшен отступ */
-    font-size: 12px; /*Меньший размер шрифта */
-}
-
-/* Колесо */
-.wheel-container {
-    position: relative;
-    margin-bottom: 20px; /*Уменьшен отступ */
-}
-
-#wheelCanvas {
-    border-radius: 50%;
-    transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* box-shadow не так много памяти жрет в отличии от transition */
-    width: 100%;           /* Занимает всю ширину контейнера */
-    max-width: 400px;   /* Максимальный размер колеса  */
-    height: auto;          /* Сохраняет пропорции */
-}
-
-.arrow {
-    position: absolute;
-    top: 5px;
-    left: 50%;
-    margin-left: -10px; /*Подправлен */
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 15px solid red;
-    z-index: 2;
-}
-
-/* Элементы управления колесом */
-.wheel-controls {
-    margin-top: 10px; /*Уменьшен отступ */
-}
-
-#spinButton {
-    padding: 10px 20px; /*Уменьшен отступ */
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px; /*Меньший размер шрифта */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-#spinButton:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-}
-
-#result {
-    margin-top: 10px; /*Уменьшен отступ */
-    font-weight: bold;
-    font-size: 16px; /*Меньший размер шрифта */
-}
-
-/* Вкладки (Tabs) */
-.tabs {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px; /*Уменьшен отступ */
-}
-
-.tab-button {
-    padding: 10px 20px; /*Уменьшен отступ */
-    border: none;
-    background-color: #ddd;
-    cursor: pointer;
-    border-radius: 8px;
-    margin: 0 5px; /*Уменьшен отступ */
-    font-size: 14px; /*Меньший размер шрифта */
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.tab-button.active {
-    background-color: #bbb;
+.btn-primary {
+    background-color: #4285f4;
     color: white;
 }
-
-/* Содержимое вкладки */
-.tab-content {
+.btn-success {
+    background-color: #3cb371;
+    color: white;
     display: none;
-    padding: 15px; /*Уменьшен отступ */
-    border: 1px solid #ddd;
+}
+
+/* --- СТРАНИЦА ПРОФИЛЯ --- */
+.page-title {
+    text-align: center;
+    color: #4285f4;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.profile-section-block {
+    background-color: #1a1a1a;
+    padding: 15px;
     border-radius: 8px;
-    margin-top: 15px; /*Уменьшен отступ */
-    transition: background-color 0.3s, color 0.3s;
+    margin-bottom: 15px;
+    border: 1px solid #333;
+}
+.profile-section-block h3 {
+    color: #ddd;
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.profile-section-block p {
+    font-size: 13px;
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+}
+.data-value { font-weight: bold; }
+.bonus-text { color: #ffcc00; }
+.deposit-text { color: #66ff99; }
+.total-deposit-display { color: #00ccff; }
+
+.deposit-action-block {
+    text-align: center;
+}
+.btn-deposit-option {
+    padding: 10px 20px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
 }
 
-/* Тёмная тема */
-.dark-theme {
-    background-color: #121212;
-    color: #ffffff;
+/* --- НИЖНЯЯ НАВИГАЦИЯ --- */
+.bottom-nav {
+    background-color: #292929;
+    border-top: 1px solid #333;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    z-index: 100;
 }
-
-.dark-theme .container {
-    background-color: #1e1e1e;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    color: #f0f0f0;
+.bottom-nav a {
+    color: #ddd;
+    text-decoration: none;
+    padding: 5px 15px;
+    border-radius: 7px;
+    font-size: 14px;
+    flex-grow: 1;
+    text-align: center;
 }
-
-.dark-theme h1 {
-    color: #fff;
-}
-
-.dark-theme .tab-button {
+.bottom-nav a.active {
     background-color: #333;
-    color: #fff;
+    color: #4285f4;
 }
-
-.dark-theme .tab-button.active {
-    background-color: #555;
-}
-
-.dark-theme .tab-content {
-    border-color: #555;
-}
-
-/* Media queries для адаптации под разные экраны */
-@media (max-width: 600px) {
-    h1 {
-        font-size: 20px;
-    }
-
-    .tab-button {
-        padding: 8px 16px;
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 400px) {
-    .container {
-        padding: 15px;
-    }
-
-    #wheelCanvas {
-        max-width: 300px;
-    }
-}
-
-
 
 
 
