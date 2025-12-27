@@ -2,67 +2,88 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Стейкинг ТОН</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>TON Staking — WebApp</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 </head>
 <body>
-
-  <!-- Вершина: о нас -->
-  <div class="aboutus" id="aboutUs">
-    <div class="aboutus-content" id="aboutContent">
-      <strong>О нас</strong>
-      <p>Наш Telegram канал - <a href="https://t.me/oldmoney_ton" target="_blank">https://t.me/oldmoney_ton</a></p>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <span>TON Staking</span>
     </div>
-  </div>
-
-  <!-- Верхняя панель (Connect wallet) -->
-  <header class="header">
-    <div class="user-info">
-      <!-- Кнопка подключить кошелек -->
-      <div id="connectBtn" class="connect-btn">Connect Wallet</div>
+    <div class="top-actions">
+      <div id="balance" class="balance">Баланс: —</div>
+      <div id="ton-connect" class="ton-connect"></div>
     </div>
   </header>
 
-  <!-- Вкладки снизу -->
-  <div class="tabs">
-    <button class="tab active" data-tab="staking"><svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>Вклад</button>
-    <button class="tab" data-tab="profile"><svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12c2.67 0 8 1.34 8 4v4H4v-4c0 2.66 5.33 4 8 4zm0-2c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/></svg>Профиль</button>
-  </div>
+  <main class="content">
+    <!-- Вклад -->
+    <section id="deposit" class="page active">
+      <div class="card staking-card">
+        <div class="card-head">
+          <h2>Стейкинг</h2>
+          <div class="badge glow">Надежно</div>
+        </div>
 
-  <!-- Контент -->
-  <div class="content">
+        <div id="empty-state" class="empty-state">
+          <div class="empty-icon"></div>
+          <div class="empty-title">Вклады не найдены</div>
+          <div class="empty-subtitle">Создайте первый вклад и начните получать доход</div>
+        </div>
 
-    <!-- Вкладка "Вклад" -->
-    <div class="tab-content active" id="staking">
-      <div class="staking-box">
-        <h2 class="title">Стейкинг</h2>
-        <div class="staking-info">
-          <p class="no-deposits" id="depositsStatus">Вклады не найдены</p>
-          <div class="investment-offer">
-            <p class="offer-text">Вложить 1 TON ПОД 144% APY</p>
-            <button class="btn" id="investBtn">Вложить 1 TON</button>
-            <p class="expected-income" id="expectedIncome">Ваш ожидаемый доход - 0,44 TON</p>
+        <div id="deposits-list" class="deposits-list" hidden></div>
+
+        <div class="offer">
+          <div class="offer-rate">
+            <div class="apy">144% APY</div>
+            <div class="monthly">12% в месяц</div>
+          </div>
+          <div class="offer-details">
+            <div class="offer-text">
+              Ваш ожидаемый доход — <b>0.44 TON</b>
+            </div>
+            <button id="investButton" class="btn btn-primary">Вложить 1 TON</button>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Вкладка "Профиль" -->
-    <div class="tab-content" id="profile">
-      <div class="profile-box">
-        <h2 class="title">Профиль</h2>
-        <div class="profile-info">
-          <p>Текущий Telegram: <span id="tgUsername">Loading...</span></p>
-          <p>Всего вложено: <span id="totalDeposit">0</span> TON</p>
+    <!-- Профиль -->
+    <section id="profile" class="page">
+      <div class="card profile-card">
+        <div class="card-head">
+          <h2>Профиль</h2>
+          <div class="badge soft">Аккаунт</div>
+        </div>
+        <div class="profile-row">
+          <div class="row-label">Telegram</div>
+          <div class="row-value" id="tg-username">Загрузка…</div>
+        </div>
+        <div class="profile-row">
+          <div class="row-label">Всего вложено</div>
+          <div class="row-value">
+            <span id="total-invested" class="pill">0 TON</span>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
+  </main>
 
-  </div>
+  <nav class="bottom-nav">
+    <a href="#deposit" data-page="deposit" class="active">
+      <span class="icon icon-deposit"></span>
+      <span>Вклад</span>
+    </a>
+    <a href="#profile" data-page="profile">
+      <span class="icon icon-profile"></span>
+      <span>Профиль</span>
+    </a>
+  </nav>
 
-  <!-- Скрипты и TON Connect -->
-  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
